@@ -102,3 +102,4 @@ teams[teams$Q4 == 1,]
 #Model to determine how factors relate to power rating
 power_model <- lm(BARTHAG ~ ADJOE + ADJDE + ADJ_T, data = teams)
 summary(power_model)
+
