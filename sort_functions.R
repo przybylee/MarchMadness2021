@@ -1,7 +1,7 @@
 #Lee Przybylski 3/17/2021
 #This script provides functions for associating the various team names with the TeamID 
 #provided by Kaggle
-library(ggplot2)
+#library(ggplot2)
 #library(plyr)
 library(tidyverse)
 options(stringsAsFactors = F)
@@ -66,7 +66,7 @@ ID_to_name <- function(id){
   }else{
     stop("ID not found")
   }}
-
+ID_to_name(1326)
 
 #Here is a function for identifying the closest match between two vectors of strings
 name_match <- function(x,y){
