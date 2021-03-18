@@ -286,5 +286,96 @@ head(MTeams_sorted)
 MTeams_sorted <- rbind(MTeams_sorted, Unmatched2)
 tail(MTeams_sorted)
 
-#write.table(MTeams, file = "TeamList.csv", col.names = T, row.names = F, sep = ",")
-#There are still some serious problems with the matching.
+#Try to match unclaimed names in bartorvik2 to the sorted team names:
+names <- as.character(rep(0, 9))
+for (j in 1:9){
+  bar <- bartorvik2[j]
+  names[j] <- name_match(bar, MTeams$scores)
+}
+d_bar <- data.frame(cbind(bartorvik2, names))
+d_bar
+MTeams_sorted$bartorvik[MTeams_sorted$scores == "UMKC"] <- "UMKC"
+MTeams_sorted$bartorvik[MTeams_sorted$scores == "TexasA&MCorpus"] <- "Texas A&M Corpus Chris"
+MTeams_sorted$scores2[MTeams_sorted$scores == "TexasA&MCorpus"] <- "TexasAMCorpus"
+MTeams_sorted$bartorvik[MTeams_sorted$scores == "FloridaIntl"] <- "FIU"
+d <- Unmatched[Unmatched$TeamName == "Cent Arkansas",]
+d$scores[1] <- "CentralArkansas"
+d$scores2[1] <- NA
+d$v <- 0
+d$v2 <- 0
+MTeams_sorted <- rbind(MTeams_sorted, d)
+#How many bartorvik ids still need matching
+bartorvik3 <- bartorvik2[!(bartorvik2 %in% MTeams_sorted$bartorvik)]
+teams_scores3 <- teams_scores2[!(teams_scores2 %in% MTeams_sorted$scores)]
+teams_scores3 <- teams_scores3[!(teams_scores3 %in% MTeams_sorted$scores2)]
+bartorvik3
+teams_scores3
+#We have 4 from bartorvik and 11 from scores
+MTeams_sorted$scores2[MTeams_sorted$scores == "NorthwesternSt"] <- "NorthwesternState"
+#Found SIUE
+MTeams_sorted[MTeams_sorted$TeamName == "SIUE",]
+MTeams_sorted[MTeams_sorted$TeamName == "S Illinois",]
+MTeams_sorted[MTeams_sorted$TeamName == "S Illinois","scores2"] <- "SouthernIllinois"
+MTeams_sorted[MTeams_sorted$TeamName == "SIUE",c("bartorvik", "scores")] <- c("SIU Edwardsville", "SIUEdwardsville")
+d <- Unmatched[Unmatched$TeamName %in% c("MTSU", "UTRGV", "PFW"),]
+d$scores <- c("IPFW", "MiddleTennSt", "UTRioGrandeValley")
+d$bartorvik <- c("Fort Wayne", "Middle Tennessee", "UT Rio Grande Valley")
+d$v <- 0
+d$v2 <- 0
+d$scores2 <- NA
+MTeams_sorted <- rbind(MTeams_sorted, d)
+bartorvik4 <- bartorvik3[!(bartorvik3 %in% MTeams_sorted$bartorvik)]
+teams_scores4 <- teams_scores3[!(teams_scores3 %in% MTeams_sorted$scores)]
+teams_scores4 <- teams_scores4[!(teams_scores4 %in% MTeams_sorted$scores2)]
+bartorvik4
+teams_scores4
+#We still have 5 score team names to sort
+list <- MTeams_sorted$TeamName
+name_search("ETSU", list)
+MTeams_sorted[MTeams_sorted$TeamName == "ETSU","scores2"] <- "EastTennState"
+name_search("WK", list)
+MTeams_sorted[MTeams_sorted$TeamName == "WKU", "scores"] <- "WesternKentucky"
+name_search("NC", list)
+MTeams_sorted[MTeams_sorted$TeamName == "NC A&T", "scores3"] <- "NorthCarolinaAT"
+MTeams_sorted$scores3 <- NA
+MTeams_sorted[MTeams_sorted$TeamName == "NC A&T", "scores2"] <- "N.CarolinaA&T"
+name_search("LI", MTeams_sorted$bartorvik)
+MTeams_sorted[MTeams_sorted$bartorvik == "LIU Brooklyn", "scores"] <- "LongIsland"
+teams_scores5 <- teams_scores4[!(teams_scores4 %in% MTeams_sorted$scores)]
+teams_scores5 <- teams_scores5[!(teams_scores5 %in% MTeams_sorted$scores2)]
+teams_scores5 <- teams_scores5[!(teams_scores5 %in% MTeams_sorted$scores3)]
+teams_scores5
+
+#We finish with 348 teams with IDs from the sorted data
+MTeams_final <- MTeams_sorted[,c(1:6, 9,10)]
+head(MTeams_final)
+#Make sure each column has no duplicates:
+sum(duplicated(MTeams_final$TeamName))
+MTeams_final[duplicated(MTeams_final$TeamName),]
+MTeams_final <- MTeams_final[!duplicated(MTeams_final$TeamName),]
+
+sum(duplicated(MTeams_final$bartorvik))
+
+sum(duplicated(MTeams_final$scores))
+dup_scores <- MTeams_final[duplicated(MTeams_final$scores),"scores"]
+MTeams_final[MTeams_final$scores %in% dup_scores,]
+MTeams_final <- MTeams_final[!duplicated(MTeams_final$TeamName),]
+MTeams_final[c("241", "304"), "scores"] <- c("DelawareState", "SanDiegoState")
+MTeams_final[c("241", "304"), "scores2"] <- c(NA, NA)
+
+D <- MTeams_final[!is.na(MTeams_final$scores2),]
+sum(duplicated(D$scores2))
+D <- MTeams_final[!is.na(MTeams_final$scores3),]
+sum(duplicated(D$scores3))
+#Remove NA
+head(MTeams_final)
+summary(MTeams_final)
+indx <- is.na(MTeams_final$scores2)
+sum(indx)
+MTeams_final$scores2[indx] <- "none"
+indx <- is.na(MTeams_final$scores3)
+sum(indx)
+MTeams_final$scores3[indx] <- "none"
+
+#Now that duplicates are removed, we can save the file
+write.table(MTeams_final, file = "TeamList2021.csv", col.names = T, row.names = F, sep = ",")
