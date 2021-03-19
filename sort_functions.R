@@ -66,7 +66,20 @@ ID_to_name <- function(id){
   }else{
     stop("ID not found")
   }}
-ID_to_name(1326)
+#ID_to_name(1326)
+#Convert ID to bartorvik name
+ID_to_bar <- function(id, error = TRUE){
+  indx <- DTeams$TeamID == id
+  if(sum(indx) == 1){
+    name <- DTeams$bartorvik[indx][1]
+    name
+  }else{
+    if (error){
+    stop("ID not found")
+    }
+    "None"
+  }}
+#ID_to_bar(1000, error = FALSE)
 
 #Here is a function for identifying the closest match between two vectors of strings
 name_match <- function(x,y){

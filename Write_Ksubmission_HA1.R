@@ -34,7 +34,7 @@ for (j in 1:(n-1)){
     id2 <- IDascd[k]
     label <- paste(yr, id1, id2, sep = "_")
     wprob <- ha1_wprob(id1, id2, neutral = TRUE)
-    Ksub[i,] <- c(label, wprob)
+    Ksub[i,] <- data.frame(ID = label, Pred = wprob)
     i <- i+1
   }
   print(paste(N-(i-1), "rows remain"))
@@ -50,4 +50,4 @@ sum(sample$ID!= Ksub$ID)
 #IF the sum is 0, we are good
 
 file <- paste("KsubmissionHA1", yr, ".csv", sep = "")
-write.table(Ksub, file = file, row.names = FALSE, col.names = TRUE)
+write.table(Ksub, file = file, row.names = FALSE, col.names = TRUE, sep = ",")
