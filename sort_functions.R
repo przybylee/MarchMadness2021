@@ -7,7 +7,7 @@ library(tidyverse)
 options(stringsAsFactors = F)
 
 #Enter the year of the tournament for fitting the model
-yr <- 2021
+#yr <- 2021
 file <- paste("TeamList", yr, ".csv", sep = "")
 DTeams <- read.csv(file, header = TRUE, sep = ",")
 #head(DTeams)
@@ -84,3 +84,5 @@ name_list <- function(name, list, n = 5){
   results <- data.frame(cbind(list, char_min))
   results[order(char_min)[1:n],]
 }
+
+
