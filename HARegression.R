@@ -42,6 +42,8 @@ plot(reg_ssn$Day, reg_ssn$Residuals)
 #No obvios pattern for these residuals over time
 
 source("HA1_functions.R")
+#To get functions for looking up teams load sourt functions
+source("sort_functions.R")
 head(reg_ssn)
 head(scores)
 ha1_team_eff(1139)
